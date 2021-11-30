@@ -21,18 +21,20 @@ def new_zillow_data():
     write it to a csv file, and returns the df.
     '''
     # Create SQL query.
-    sql_query = 'SELECT 
-                bedroomcnt, bathroomcnt, calculatedfinishedsquarefeet, taxvaluedollarcnt, yearbuilt, taxamount, fips 
-                FROM zillow.properties_2017'
+    sql_query = 'SELECT \
+                bedroomcnt, bathroomcnt, calculatedfinishedsquarefeet, taxvaluedollarcnt, yearbuilt, \
+                taxamount, fips\
+                FROM zillow.properties_2017 AS zp LEFT JOIN zillow.propertylandusetype AS plt USING (propertylandusetypeid) \
+                WHERE plt.propertylandusetypeid = 261'
     
     # Read in DataFrame from Codeup db.
-    df = pd.read_sql(sql_query, get_connection('titanic_db'))
+    df = pd.read_sql(sql_query, get_connection('zillow'))
     
     return df
 
 
 
-def get_titanic_data():
+def get_zillow_data():
     '''
     This function reads in the zillow data from Codeup database, writes data to
     a csv file if a local file does not exist, and returns a df.
