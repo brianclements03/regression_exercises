@@ -53,3 +53,38 @@ def get_zillow_data():
         df.to_csv('zillow_df.csv')
         
     return df
+
+def remove_outliers(df, k, col_list):
+    ''' remove outliers from a list of columns in a dataframe 
+        and return that dataframe
+    '''
+    
+    for col in col_list:
+
+        q1, q3 = df[col].quantile([.25, .75])  # get quartiles
+        
+        iqr = q3 - q1   # calculate interquartile range
+        
+        upper_bound = q3 + k * iqr   # get upper bound
+        lower_bound = q1 - k * iqr   # get lower bound
+
+        # return dataframe without outliers
+        
+        df = df[(df[col] > lower_bound) & (df[col] < upper_bound)]
+        
+    return df
+
+def clean_and_prep_data(df):
+    '''
+    This function will do some light cleaning and minimal other manipulation of the zillow data set, 
+    to get it ready to be split in the next step.
+    
+    '''
+    cols = ['bedroomcnt', 'bathroomcnt', 'calculatedfinishedsquarefeet', 'taxvaluedollarcnt', 'taxamount']
+    df = df.dropna()
+    df = remove_outliers(df, 1.5, cols)
+    from datetime import date
+    df.yearbuilt =  df.yearbuilt.astype(int)
+    year = date.today().year
+    df['age'] = year - df.yearbuilt
+    return df
