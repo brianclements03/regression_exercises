@@ -5,6 +5,34 @@ from env import host, user, password
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from pydataset import data
+import statistics
+import seaborn as sns
+import env
+from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+import scipy
+# import acquire
+# import prepare
+from scipy import stats
+
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import export_graphviz
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import LogisticRegression
+import sklearn.linear_model
+import sklearn.preprocessing
+import warnings
+warnings.filterwarnings("ignore")
+# importing my personal wrangle module
+import wrangle
+
 ###################### Acquire Titanic Data ######################
 
 def get_connection(db, user=user, host=host, password=password):
@@ -101,15 +129,28 @@ def clean_and_prep_data(df):
     return df
 
 
-def split_zillow(df):
+def split_and_scale_zillow(df):
     '''
-    Takes in the zillow dataframe and returns train, validate, test subset dataframes
+    Takes in the zillow dataframe and returns SCALED train, validate, test subset dataframes
     '''
-
+    # SPLIT
     # Test set is .2 of original dataframe
     train, test = train_test_split(df, test_size = .2, random_state=123)#, stratify= df.tax_value)
     # The remainder is here divided .7 to train and .3 to validate
     train, validate = train_test_split(train, test_size=.3, random_state=123)#, stratify= train.tax_value)
+    # SCALE
+    # 1. create the object
+    scaler = sklearn.preprocessing.MinMaxScaler()
+    # 2. fit the object
+    scaler.fit(train)
+    # 3. use the object. Scale all columns for now
+    train = pd.DataFrame(scaler.transform(train), columns=['bedrooms', 'bathrooms', 'sq_ft', 'tax_value', 'tax_amount', 'age',
+       'LA', 'Orange', 'Ventura'])
+    test = pd.DataFrame(scaler.transform(test), columns=['bedrooms', 'bathrooms', 'sq_ft', 'tax_value', 'tax_amount', 'age',
+       'LA', 'Orange', 'Ventura'])
+    validate = pd.DataFrame(scaler.transform(validate), columns=['bedrooms', 'bathrooms', 'sq_ft', 'tax_value', 'tax_amount', 'age',
+       'LA', 'Orange', 'Ventura'])
+
     return train, validate, test
 
 
@@ -126,4 +167,3 @@ def encode_zillow(df):
     df.rename(columns={'6037.0':'LA', '6059.0': 'Orange', '6111.0':'Ventura'}, inplace=True)
     df = df.drop(columns='fips')
     return df
-
