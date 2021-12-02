@@ -87,4 +87,14 @@ def clean_and_prep_data(df):
     df.yearbuilt =  df.yearbuilt.astype(int)
     year = date.today().year
     df['age'] = year - df.yearbuilt
+    df = df.drop(columns=['yearbuilt'])
     return df
+
+
+def split_zillow_data(df):
+    '''
+    Takes in the zillow dataframe and returns train, validate, test subset dataframes
+    '''
+    train, test = train_test_split(df, test_size = .2, random_state=123, stratify=df.taxvaluedollarcnt)
+    train, validate = train_test_split(train, test_size=.3, random_state=123, stratify=train.taxvaluedollarcnt)
+    return train, validate, test
