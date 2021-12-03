@@ -112,7 +112,11 @@ def clean_and_prep_data(df):
     to get it ready to be split in the next step.
     
     '''
-    cols = ['bedroomcnt', 'bathroomcnt', 'calculatedfinishedsquarefeet', 'taxvaluedollarcnt', 'taxamount']
+        # renaming columns for ease of reading
+    df = df.rename(columns={'bedroomcnt':'bedrooms','bathroomcnt':'bathrooms','calculatedfinishedsquarefeet':'sq_ft','taxvaluedollarcnt':'tax_value','taxamount':'tax_amount','fips':'county'})
+    cols = ['bedrooms', 'bathrooms', 'sq_ft', 'tax_value', 'tax_amount']
+    # replace fips codes with county names
+    df.county = df.county.replace({6037.0:'LA',6059.0: 'Orange',6111.0:'Ventura'})
     # dropping nulls
     df = df.dropna()
     #removing outliers--see the function elsewhere in this file
@@ -124,8 +128,7 @@ def clean_and_prep_data(df):
     df['age'] = year - df.yearbuilt
     # dropping the 'yearbuilt' column now that i have the age
     df = df.drop(columns=['yearbuilt'])
-    # renaming columns for ease of reading
-    df = df.rename(columns={'bedroomcnt':'bedrooms','bathroomcnt':'bathrooms','calculatedfinishedsquarefeet':'sq_ft','taxvaluedollarcnt':'tax_value','taxamount':'tax_amount'})
+
     return df
 
 
@@ -160,10 +163,10 @@ def encode_zillow(df):
     once it has been encoded
     
     '''
-    cols_to_dummy = df['fips']
+    cols_to_dummy = df['county']
     dummy_df = pd.get_dummies(cols_to_dummy, dummy_na=False, drop_first=False)
     df = pd.concat([df, dummy_df], axis = 1)
     df.columns = df.columns.astype(str)
-    df.rename(columns={'6037.0':'LA', '6059.0': 'Orange', '6111.0':'Ventura'}, inplace=True)
-    df = df.drop(columns='fips')
+    #df.rename(columns={'6037.0':'LA', '6059.0': 'Orange', '6111.0':'Ventura'}, inplace=True)
+    df = df.drop(columns='county')
     return df
