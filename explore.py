@@ -36,5 +36,11 @@ import wrangle
 categoricals = ['county']
 continuous = ['bedrooms','bathrooms','sq_ft','tax_value','tax_amount','age']
 
-def plot_variable_pairs():
+def plot_variable_pairs(x,y, df):
+    '''
+    Accepts the string name of an x variable (one continuous feature) and y variable, as well as the df name
+    and returns a joinplot for them, including regression line.
     
+    '''
+    sns.jointplot(x=x, y=y, data=df,  kind='reg', height=5)
+plt.show()
