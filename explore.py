@@ -43,4 +43,65 @@ def plot_variable_pairs(x,y, df):
     
     '''
     sns.jointplot(x=x, y=y, data=df,  kind='reg', height=5)
-plt.show()
+    plt.show()
+
+def months_to_years(df):
+    '''
+    Takes a dataframe with a tenure column (in months) and adds a tenure_years column
+    
+    '''
+    df['tenure_years'] = round(df.tenure/12).astype(int)
+
+def plot_categorical_and_continuous_vars(cat_vars,cont_vars,df):
+# This cell is returning 4 graphs for each of the 10 categorical variables (one graph for each continuous)
+    for i, colx in enumerate(cat_vars):
+        for coly in cont_vars:
+            plt.figure(figsize=(25, 5))
+            # i starts at 0, but plot nos should start at 1
+            plot_number = i + 1 
+            # Create subplot.
+            plt.subplot(1,len(cat_vars), plot_number)
+            # Title with column name.
+            plt.title(colx)
+            # Display histogram for column.
+            sns.barplot(x=df[colx],y=df[coly], data=df),
+            #they're all being drawn on the same plot
+    #         sns.swarmplot(x=telco[colx],y=telco[coly], data=telco),
+    #         sns.stripplot(x=telco[colx],y=telco[coly], data=telco)
+            # Hide gridlines.
+            plt.grid(False)
+            plt.show()
+            plt.tight_layout()
+            
+    for i, colx in enumerate(cat_vars):
+        for coly in cont_vars:
+            plt.figure(figsize=(25, 5))
+            # i starts at 0, but plot nos should start at 1
+            plot_number = i + 1 
+            # Create subplot.
+            plt.subplot(1,len(cat_vars), plot_number)
+            # Title with column name.
+            plt.title(colx)
+            # Display histogram for column.
+            sns.swarmplot(x=df[colx],y=df[coly], data=df),
+    #         sns.stripplot(x=telco[colx],y=telco[coly], data=telco)
+            # Hide gridlines.
+            plt.grid(False)
+            plt.show()
+            plt.tight_layout()
+
+    for i, colx in enumerate(cat_vars):
+        for coly in cont_vars:
+            plt.figure(figsize=(25, 5))
+            # i starts at 0, but plot nos should start at 1
+            plot_number = i + 1 
+            # Create subplot.
+            plt.subplot(1,len(cat_vars), plot_number)
+            # Title with column name.
+            plt.title(colx)
+            # Display histogram for column.
+            sns.stripplot(x=df[colx],y=df[coly], data=df)
+            # Hide gridlines.
+            plt.grid(False)
+            plt.show()
+            plt.tight_layout()

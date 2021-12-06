@@ -55,3 +55,41 @@ def get_telco_data():
         df.to_csv('telco.csv')
         
     return df
+
+
+
+
+def new_mall_data():
+    '''
+    This function reads the mall_customers data from the Codeup database into a df.
+    '''
+    sql_query = """
+                select * from mall_customers.customers
+                """
+    
+    # Read in DataFrame from Codeup db.
+    df = pd.read_sql(sql_query, get_connection('mall_customers'))
+    
+    return df
+
+def get_mall_data():
+    '''
+    This function reads in mall_customers data from Codeup database, writes data to
+    a csv file if a local file does not exist, and returns a df.
+    First, it checks if the .csv already exists; if not, it will pull it off
+    the Codeup server using a SQL query
+    '''
+    if os.path.isfile('mall.csv'):
+        
+        # If csv file exists read in data from csv file.
+        df = pd.read_csv('mall.csv', index_col=0)
+        
+    else:
+        
+        # Read fresh data from db into a DataFrame
+        df = new_mall_data()
+        
+        # Cache data
+        df.to_csv('mall.csv')
+        
+    return df
