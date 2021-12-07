@@ -10,16 +10,18 @@ from math import sqrt
 import seaborn as sns
 
 def plot_residuals(y, yhat):
+    baseline = y.mean()
+    baseline_residual = y - baseline
     plt.figure(figsize = (11,5))
 
-    # plt.subplot(121)
-    # plt.scatter(y, df.baseline_residual)
-    # plt.axhline(y = 0, ls = ':')
-    # plt.xlabel('total_bill')
-    # plt.ylabel('Residual')
-    # plt.title('Baseline Residuals')
+    plt.subplot(121)
+    plt.scatter(y, baseline_residual)
+    plt.axhline(y = 0, ls = ':')
+    plt.xlabel('x_variable')
+    plt.ylabel('Residual')
+    plt.title('Baseline Residuals')
 
-    # plt.subplot(122)
+    plt.subplot(122)
     plt.scatter(y, (y - yhat))
     plt.axhline(y = 0, ls = ':')
     plt.xlabel('x_variable')
